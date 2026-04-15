@@ -30,6 +30,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <div className="container mx-auto p-14">
           {children}
+        
         </div>
 
       </body>
