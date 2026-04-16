@@ -37,7 +37,7 @@ export default function LoginPage() {
         // checking password at login
 
         if (password.length <= 5) {
-            setPasswordError("Enter proper length password");
+            setPasswordError("Enter password with proper length");
             valid = false;
         }
         else {
@@ -60,12 +60,13 @@ export default function LoginPage() {
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data.error);
+            alert(data?.error || "Login failed");
             return;
         }
 
+
         alert("Login Successfull");
-        
+
 
 
 
@@ -88,7 +89,7 @@ export default function LoginPage() {
             </Button>
 
             <form
-
+                action={formHandleSubmit}
                 className="container mx-auto w-96 border text-center rounded-2xl p-4 flex flex-col gap-4"
             >
                 <h1 className="mb-2 font-semibold text-green-500">Login</h1>
@@ -96,11 +97,17 @@ export default function LoginPage() {
                 <div>
                     <Label>Email</Label>
                     <Input name="email" type="email" />
+                    {
+                        emailError && (<p className="text-red-400 text-sm">{emailError}</p>)
+                    }
                 </div>
 
                 <div>
                     <Label>Password</Label>
                     <Input name="password" type="password" />
+                    {
+                        passwordError && (<p className="text-red-400 text-sm">{passwordError}</p>)
+                    }
                 </div>
 
                 <Button type="submit" className="bg-gray-500">

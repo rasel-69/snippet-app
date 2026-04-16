@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/db";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 
@@ -9,22 +10,37 @@ export default async function Home() {
 
   const snippets = await prisma.snippet.findMany();
 
+  const cookieStore = await cookies();
+  const userCookie = cookieStore.get("user");
+
+  let user = null;
+  if (userCookie) {
+    try {
+      user = JSON.parse(userCookie.value);
+    } catch { }
+  }
+
+  console.log("user is", user)
+
 
   return (
     <div>
-
-
       <nav className="flex items-center justify-between bg-gray-100 h-14 mb-8 rounded">
         <h1 className="font-semibold text-2xl">Home</h1>
-        <Link href={"/signup"}>
-          <Button
-            className="bg-gray-100 text-black font-semibold text-xl"
-          >SignUp</Button>
-        </Link>
+        <div className="flex gap-2">
+          {user ? (
+            /* ✅ User is logged in: Show only SignOut */
+            <form action="/logout" method="POST">
+              <Button type="submit">SignOut</Button>
+            </form>
+          ) : (
+            /* ❌ User is logged out: Show only Login */
+            <Link href="/login">
+              <Button>Login</Button>
+            </Link>
+          )}
+        </div>
 
-        <Link href={"/login"}>
-          <Button>Login</Button>
-        </Link>
       </nav>
 
       <div className="flex flex-col gap-4">
