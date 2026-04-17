@@ -4,11 +4,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import prisma from "@/lib/db";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useState } from "react";
-
+import router from "next/router";
 
 
 
@@ -55,6 +55,7 @@ export default function LoginPage() {
             method: "POST",
             body: formData,
         })
+        console.log("response is from login page", res);
 
         // waiting for Database Response through use server login action
         const data = await res.json();
@@ -68,7 +69,7 @@ export default function LoginPage() {
         alert("Login Successfull");
 
 
-
+        router.push("/");
 
     }
 

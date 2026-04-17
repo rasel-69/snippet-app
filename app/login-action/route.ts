@@ -35,7 +35,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // But if everything ok
+        // But if everything ok send using cokies for navbar button change 
         const response = NextResponse.json({ success: true });
         response.cookies.set("user", JSON.stringify({
             id: user.id,

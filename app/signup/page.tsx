@@ -60,7 +60,7 @@ export default function SignupPage() {
 
         alert("Registration Successfull");
 
-       // redirect("/login");
+        redirect("/login");
     }
 
 

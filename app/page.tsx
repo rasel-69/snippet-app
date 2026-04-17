@@ -20,7 +20,7 @@ export default async function Home() {
     } catch { }
   }
 
-  console.log("user is", user)
+  console.log("user is from navbar home page", user)
 
 
   return (
@@ -29,12 +29,10 @@ export default async function Home() {
         <h1 className="font-semibold text-2xl">Home</h1>
         <div className="flex gap-2">
           {user ? (
-            /* ✅ User is logged in: Show only SignOut */
             <form action="/logout" method="POST">
               <Button type="submit">SignOut</Button>
             </form>
           ) : (
-            /* ❌ User is logged out: Show only Login */
             <Link href="/login">
               <Button>Login</Button>
             </Link>
