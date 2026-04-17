@@ -8,11 +8,12 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useState } from "react";
-import router from "next/router";
+import { useRouter } from "next/router";
 
 
 
 export default function LoginPage() {
+    const router = useRouter(); // Initialize router
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");

@@ -1,18 +1,11 @@
-
-
-
-// aita banaisi cookies ar jonno ai gula sign up then login in tar por ai navbar ar state change ar jonno  
-
 import { NextResponse } from "next/server";
 
-export async function POST() {
-  const res = NextResponse.json({ success: true });
+export async function POST(req: Request) {
+  // redirecting to the home again
+  const res = NextResponse.redirect(new URL("/", req.url), { status: 303 });
 
+  // clearing the user cookie
   res.cookies.set("user", "", { maxAge: 0 });
 
   return res;
 }
-
-
-
-
