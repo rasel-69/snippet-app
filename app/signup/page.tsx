@@ -16,6 +16,7 @@ export default function SignupPage() {
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const [loading, setLoading] = useState(false);
 
     function validate(singUpFormData: FormData) {
         let valid = true;
@@ -51,16 +52,27 @@ export default function SignupPage() {
 
     async function handleFormSubmit(formData: FormData) {
         if (!validate(formData)) return;
+        setLoading(true);
 
-        // calling our signUp server action
-        await fetch("/signup-action", {
-            method: "POST",
-            body: formData,
-        })
+        try {
+            const res = await fetch("/signup-action", {
+                method: "POST",
+                body: formData,
+            });
 
-        alert("Registration Successfull");
+            const data = await res.json();
 
-        redirect("/login");
+            if (!res.ok) {
+                alert(data.error || "Signup failed");
+                return;
+            }
+
+            alert("Confirmation email sent! Please check your inbox (and spam folder).");
+        } catch (err) {
+            alert("Something went wrong.");
+        } finally {
+            setLoading(false);
+        }
     }
 
 
@@ -103,8 +115,8 @@ export default function SignupPage() {
                     )}
                 </div>
 
-                <Button type="submit" className="bg-gray-500">
-                    Sign Up
+                <Button type="submit" className="bg-gray-500" disabled={loading}>
+                    {loading ? "Sending Email..." : "Sign Up"}
                 </Button>
 
                 <Link href={"/login"}>
