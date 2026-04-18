@@ -1,32 +1,26 @@
 'use client'
 
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import prisma from "@/lib/db";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useState } from "react";
-
 
 
 export default function SignupPage() {
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
-    const [loading, setLoading] = useState(false);
 
-    function validate(singUpFormData: FormData) {
+    function validate(formData: FormData) {
         let valid = true;
 
-        const email = singUpFormData.get("email") as string;
-        const password = singUpFormData.get("password") as string;
+        const email = formData.get("email") as string;
+        const password = formData.get("password") as string;
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // email ar jonno regular expression
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        //email valiation
         if (!emailRegex.test(email)) {
             setEmailError("Input Valid Email");
             valid = false;
@@ -34,48 +28,37 @@ export default function SignupPage() {
             setEmailError("");
         }
 
-        //password validation
-
         if (password.length <= 5) {
-            setPasswordError("Password must me more than 5 charecters");
+            setPasswordError("Password must be more than 5 characters");
             valid = false;
-        }
-        else {
+        } else {
             setPasswordError("");
         }
 
         return valid;
-
     }
 
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
 
+        const formData = new FormData(e.currentTarget); // Add this line
 
-    async function handleFormSubmit(formData: FormData) {
-        if (!validate(formData)) return;
-        setLoading(true);
+        if (!validate(formData)) return; // Add validation call
 
-        try {
-            const res = await fetch("/signup-action", {
-                method: "POST",
-                body: formData,
-            });
+        const res = await fetch("/signup-action", {
+            method: "POST",
+            body: formData,
+        });
 
-            const data = await res.json();
+        const data = await res.json();
 
-            if (!res.ok) {
-                alert(data.error || "Signup failed");
-                return;
-            }
-
-            alert("Confirmation email sent! Please check your inbox (and spam folder).");
-        } catch (err) {
-            alert("Something went wrong.");
-        } finally {
-            setLoading(false);
+        if (!res.ok) {
+            alert(data.error);
+            return;
         }
+
+        window.location.href = "/login";
     }
-
-
 
     return (
         <div>
@@ -87,7 +70,7 @@ export default function SignupPage() {
             </Button>
 
             <form
-                action={handleFormSubmit}
+                onSubmit={handleSubmit}
                 className="container mx-auto w-96 border text-center rounded-2xl p-4 flex flex-col gap-4"
             >
                 <h1 className="mb-2 font-semibold text-green-500">Please Sign Up</h1>
@@ -100,33 +83,17 @@ export default function SignupPage() {
                 <div>
                     <Label>Email</Label>
                     <Input name="email" type="email" />
-
-                    {emailError && (
-                        <p className="text-red-500 text-sm mt-1">{emailError}</p>
-                    )}
+                    {emailError && <p className="text-red-500 text-sm">{emailError}</p>}
                 </div>
 
                 <div>
                     <Label>Password</Label>
                     <Input name="password" type="password" />
-
-                    {passwordError && (
-                        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
-                    )}
+                    {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                 </div>
 
-                <Button type="submit" className="bg-gray-500" disabled={loading}>
-                    {loading ? "Sending Email..." : "Sign Up"}
-                </Button>
-
-                <Link href={"/login"}>
-                    <p className="text-sm text-orange-400 hover:underline">
-                        Allready have an account?
-                    </p>
-                </Link>
-
+                <Button type="submit">Sign Up</Button>
             </form>
         </div>
-    )
-
+    );
 }

@@ -1,18 +1,13 @@
 'use client'
 
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-
 
 export default function LoginPage() {
-    const router = useRouter(); // Initialize router
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
@@ -25,60 +20,45 @@ export default function LoginPage() {
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-        //again checking email at login
         if (!emailRegex.test(email)) {
-            setEmailError("Enter Valid Email");
+            setEmailError("Enter valid email");
             valid = false;
-        }
-        else {
+        } else {
             setEmailError("");
         }
-
-        // checking password at login
 
         if (password.length <= 5) {
             setPasswordError("Enter password with proper length");
             valid = false;
-        }
-        else {
+        } else {
             setPasswordError("");
         }
 
         return valid;
-
     }
 
-    async function formHandleSubmit(formData: FormData) {
+    async function handleFormSubmit(formData: FormData) {
         if (!validate(formData)) return;
 
         const res = await fetch("/login-action", {
             method: "POST",
             body: formData,
-        })
-        console.log("response is from login page", res);
+        });
 
-        // waiting for Database Response through use server login action
         const data = await res.json();
 
         if (!res.ok) {
-            alert(data?.error || "Login failed");
+            alert(data.error);
             return;
         }
 
+        //  success message
+        alert("Login successful!");
 
-        alert("Login Successfull");
-
-
-        router.push("/");
-
+        setTimeout(() => {
+            window.location.href = "/";
+        }, 2000);
     }
-
-
-
-
-
-
-
 
     return (
         <div>
@@ -90,37 +70,39 @@ export default function LoginPage() {
             </Button>
 
             <form
-                action={formHandleSubmit}
+                action={handleFormSubmit}
                 className="container mx-auto w-96 border text-center rounded-2xl p-4 flex flex-col gap-4"
             >
-                <h1 className="mb-2 font-semibold text-green-500">Login</h1>
+                <h1 className="mb-2 font-semibold text-blue-500">Login</h1>
 
                 <div>
                     <Label>Email</Label>
                     <Input name="email" type="email" />
-                    {
-                        emailError && (<p className="text-red-400 text-sm">{emailError}</p>)
-                    }
+                    {emailError && (
+                        <p className="text-red-500 text-sm mt-1">{emailError}</p>
+                    )}
                 </div>
 
                 <div>
                     <Label>Password</Label>
                     <Input name="password" type="password" />
-                    {
-                        passwordError && (<p className="text-red-400 text-sm">{passwordError}</p>)
-                    }
+                    {passwordError && (
+                        <p className="text-red-500 text-sm mt-1">{passwordError}</p>
+                    )}
                 </div>
 
                 <Button type="submit" className="bg-gray-500">
                     Login
                 </Button>
 
-                <Link href={"/signup"}>
-                    <p className="text-sm text-orange-400 hover:underline">
-                        Don't have any account ?
-                    </p>
-                </Link>
+                {/*  Signup redirect */}
+                <p className="text-sm mt-2">
+                    Don’t have an account?{" "}
+                    <Link href="/signup" className="text-blue-500 underline">
+                        Create one
+                    </Link>
+                </p>
             </form>
         </div>
-    )
+    );
 }

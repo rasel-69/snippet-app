@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import prisma from "@/lib/db";
+import { signout } from "@/lib/logout-action";
 import { cookies } from "next/headers";
 import Link from "next/link";
 
@@ -27,17 +28,24 @@ export default async function Home() {
     <div>
       <nav className="flex items-center justify-between bg-gray-100 h-14 mb-8 rounded">
         <h1 className="font-semibold text-2xl">Home</h1>
+
         <div className="flex gap-2">
           {user ? (
-            <form action="/logout" method="POST">
-              <Button type="submit">SignOut</Button>
+            /* Use a form with a Server Action instead of a Link */
+            <form action={signout}>
+              <Button variant="destructive" type="submit">
+                Sign Out
+              </Button>
             </form>
           ) : (
-            <Link href="/login">
-              <Button>Login</Button>
-            </Link>
+            <>
+              <Link href="/login">
+                <Button>Login</Button>
+              </Link>
+            </>
           )}
         </div>
+
 
       </nav>
 
