@@ -3,7 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft } from "lucide-react";
+import { signIn, useSession } from "@/lib/auth-client";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -60,8 +61,30 @@ export default function SignupPage() {
         window.location.href = "/login";
     }
 
+
+      const {data: session, isPending}=useSession();
+
+        if(isPending){
+            return (
+                <div className="flex items-center gap-2">
+                    <Loader2 className="h-6 w-6 animate-spin"/>
+                    Loading....
+                </div>
+            )
+        }
+
+        // for github 
+    async function handleGithubSignup() {
+        await signIn.social({
+            provider: "github",
+            callbackURL: "/",  
+        });
+    }
+
+
+
     return (
-        <div>
+        <div className="mt-14">
             <Button variant="ghost" asChild className="mb-8 text-orange-500">
                 <Link href="/">
                     <ArrowLeft className="w-4 h-4 mr-2" />
@@ -92,7 +115,14 @@ export default function SignupPage() {
                     {passwordError && <p className="text-red-500 text-sm">{passwordError}</p>}
                 </div>
 
-                <Button type="submit">Sign Up</Button>
+                <Button type="submit" className="bg-gray-500">Sign Up</Button>
+                <div className="relative flex items-center">
+                    <div className="grow border-t border-amber-600"></div>
+                    <span className=" mx-4 text-gray-400 text-sm">OR</span>
+                    <div className="grow border-t border-amber-600"></div>
+                </div>
+
+                <Button onClick={handleGithubSignup} type="button" className="bg-gray-500">Sign Up With GitHub</Button>
             </form>
         </div>
     );
