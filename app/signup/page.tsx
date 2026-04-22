@@ -57,28 +57,23 @@ export default function SignupPage() {
             alert(data.error);
             return;
         }
-
+        alert("Successfully Registered!");
+    
         window.location.href = "/login";
     }
 
 
-      const {data: session, isPending}=useSession();
+    const { data: session, isPending } = useSession();
 
-        if(isPending){
-            return (
-                <div className="flex items-center gap-2">
-                    <Loader2 className="h-6 w-6 animate-spin"/>
-                    Loading....
+    if (isPending) {
+        return (
+            <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/70 backdrop-blur-sm">
+                <div className="flex items-center gap-3 p-6 bg-white shadow-xl rounded-xl border">
+                    <Loader2 className="h-8 w-8 animate-spin text-green-600" />
+                    <span className="text-lg font-medium text-gray-700">Loading...</span>
                 </div>
-            )
-        }
-
-        // for github 
-    async function handleGithubSignup() {
-        await signIn.social({
-            provider: "github",
-            callbackURL: "/",  
-        });
+            </div>
+        );
     }
 
 
@@ -122,7 +117,7 @@ export default function SignupPage() {
                     <div className="grow border-t border-amber-600"></div>
                 </div>
 
-                <Button onClick={handleGithubSignup} type="button" className="bg-gray-500">Sign Up With GitHub</Button>
+                <Button type="button" className="bg-gray-500" disabled >Sign Up With GitHub</Button>
             </form>
         </div>
     );

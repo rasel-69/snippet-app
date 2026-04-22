@@ -5,12 +5,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export default function LoginPage() {
 
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
+    const searchParams = useSearchParams();
+    const callbackUrl = searchParams.get("callbackUrl") || "/";
 
     function validate(formData: FormData) {
         let valid = true;
@@ -54,10 +57,10 @@ export default function LoginPage() {
 
         //  success message
         alert("Login successful!");
-
-        setTimeout(() => {
-            window.location.href = "/";
-        }, 2000);
+        
+        setTimeout(()=>{
+            window.location.href=callbackUrl;
+        },100)
     }
 
     return (

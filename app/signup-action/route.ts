@@ -29,10 +29,9 @@ export async function POST(req: Request) {
                 password: hashedPassword,
             },
         });
-  
 
         return NextResponse.json({ success: true });
-           
+
     } catch (error: any) {
 
         // Prisma duplicate error

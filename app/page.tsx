@@ -45,18 +45,31 @@ export default async function Home() {
             </>
           )}
         </div>
-
-
+        
       </nav>
 
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <h1 className="font-semibold text-orange-500">Snippets</h1>
-          <Link href={"/snippet/new"}>
-            <Button className="bg-green-400 text-black w-20 ">
-              Creat New
-            </Button>
-          </Link>
+
+          {user ? (
+            /* Logged in: Go straight to create page */
+            <Link href="/snippet/new">
+              <Button className="bg-green-400 text-black w-24">
+                Create New
+              </Button>
+            </Link>
+          ) : (
+            /* Not logged in: Redirect to login first */
+            <Link href="/login?callbackUrl=/snippet/new">
+              <Button variant="outline" className="border-green-400 text-orange-500">
+                Create New
+              </Button>
+            </Link>
+          )}
+
+
+
         </div>
 
         {

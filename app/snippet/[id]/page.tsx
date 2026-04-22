@@ -1,7 +1,9 @@
 
+import DeleteSnippetButton from '@/components/DeleteSnippetButton'
 import { Button } from '@/components/ui/button'
 import prisma from '@/lib/db'
 import { ArrowLeft } from 'lucide-react'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
 import React from 'react'
 
@@ -13,6 +15,13 @@ const SnippetDetailPage = async ({
 
   const id = parseInt((await params).id);
 
+  // Getting Logged In user 
+  const cookieStore = await cookies();
+  const userCookie = cookieStore.get("user");
+  let loggedInUser = userCookie ? JSON.parse(userCookie.value) : null; //user cookie thakle value ta nibo na hole null;
+
+
+
   const snippet = await prisma.snippet.findUnique({
     where: {
       id,
@@ -22,6 +31,10 @@ const SnippetDetailPage = async ({
   if (!snippet) {
     return <h1 className='text-red-500'>Snippet Not found</h1>
   }
+
+
+  //checking the owneship of snippet je logged in user ar created snippet naki ?
+  const isOwner = loggedInUser && loggedInUser.id === snippet.userId
 
 
   return (
@@ -36,12 +49,18 @@ const SnippetDetailPage = async ({
 
       <div className='flex items-center justify-between'>
         <h1 className='text-2xl font-semibold'>{snippet.title}</h1>
-        <div className='flex flex-row gap-4'>
-         <Link href={`/snippet/${snippet.id}/edit`}>
-           <Button className='bg-gray-600'> Edit</Button>
-         </Link>
-          <Button className='bg-red-400'>Delete</Button>
-        </div>
+
+        {
+          isOwner && (
+            <div className='flex flex-row gap-4'>
+              <Link href={`/snippet/${snippet.id}/edit`}>
+                <Button className='bg-gray-600 hover:bg-green-400 transition-colors duration-200'> Edit</Button>
+              </Link>
+              <DeleteSnippetButton id={snippet.id} />
+            </div>
+          )
+        }
+
       </div>
 
 

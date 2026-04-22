@@ -8,9 +8,11 @@ datasource db {
 }
 
 model Snippet {
-  id     Int    @id @default(autoincrement())
-  title  String
-  code   String
+  id      Int    @id @default(autoincrement())
+  title   String
+  code    String
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
 }
 
 model User {
@@ -18,17 +20,9 @@ model User {
   email     String   @unique
   name      String?
   password  String?
+  snippets  Snippet[]
 }
 
-model Verification {
-  id        String   @id @default(cuid())
-  identifier String
-  value      String
-  expiresAt  DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
 
 
 
